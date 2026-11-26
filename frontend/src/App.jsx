@@ -20,15 +20,24 @@ function App() {
   const [activeSection, setActiveSection] = useState('home')
   const [showBackToTop, setShowBackToTop] = useState(false)
 
+  // Connect to deployed Vercel backend
   useEffect(() => {
-    fetch('/api/health')
-      .then((res) => res.json())
+    fetch('https://cloud-fullstack-final-project.vercel.app/api/health')
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Backend error')
+        }
+        return res.json()
+      })
       .then((data) => {
-        setBackendStatus(data.status === 'success' ? 'Terhubung' : 'Tidak terhubung')
+        setBackendStatus(
+          data.status === 'success' ? 'Terhubung' : 'Tidak terhubung'
+        )
       })
       .catch(() => setBackendStatus('Tidak terhubung'))
   }, [])
 
+  // Scroll reveal animation
   useEffect(() => {
     const elements = document.querySelectorAll('.reveal')
 
@@ -53,6 +62,7 @@ function App() {
     return () => observer.disconnect()
   }, [])
 
+  // Active navigation section
   useEffect(() => {
     const sections = document.querySelectorAll('main section[id]')
 
@@ -69,6 +79,7 @@ function App() {
     return () => observer.disconnect()
   }, [])
 
+  // Back to top visibility
   useEffect(() => {
     const handleScroll = () => setShowBackToTop(window.scrollY > 450)
 
